@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JARVIS</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #07111f;
+  color: #55e6ff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+}
+h1 { letter-spacing: 7px; margin-top: 45px; }
+#orb {
+  width: 150px;
+  height: 150px;
+  margin: 30px;
+  border: 3px solid #35cfff;
+  border-radius: 50%;
+  box-shadow: 0 0 25px #087cbb, inset 0 0 25px #087cbb;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+}
+input, button {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: 7px 0;
+  border-radius: 10px;
+  font-size: 16px;
+}
+input {
+  background: #102236;
+  color: white;
+  border: 1px solid #2389a8;
+}
+button {
+  background: #123a50;
+  color: #65eaff;
+  border: 1px solid #2389a8;
+}
+#resposta {
+  max-width: 400px;
+  margin-top: 25px;
+  text-align: center;
+  line-height: 1.6;
+}
+#status { color: #91aebb; }
+</style>
+</head>
+<body>
+<h1>J.A.R.V.I.S.</h1>
+<div id="orb">J</div>
+<p id="status">SISTEMAS ONLINE</p>
+<input id="comando" placeholder="Diga seu comando...">
+<button id="enviar">EXECUTAR</button>
+<button id="falar">OUVIR RESPOSTA</button>
+<div id="resposta">À sua disposição, senhor.</div>
+
+<script>
+const entrada = document.getElementById("comando");
+const resposta = document.getElementById("resposta");
+const status = document.getElementById("status");
+
+function executar() {
+  const c = entrada.value.trim().toLowerCase();
+  if (!c) {
+    resposta.textContent = "Aguardando seu comando, senhor.";
+    return;
+  }
+
+  if (c.includes("olá") || c.includes("oi")) {
+    resposta.textContent = "Olá, senhor. Estou à sua disposição.";
+  } else if (c.includes("seu nome")) {
+    resposta.textContent = "Sou JARVIS, seu assistente pessoal.";
+  } else if (c.includes("hora")) {
+    resposta.textContent = "São " +
+      new Date().toLocaleTimeString("pt-BR") + ", senhor.";
+  } else if (c.includes("data")) {
+    resposta.textContent = "Hoje é " +
+      new Date().toLocaleDateString("pt-BR") + ", senhor.";
+  } else if (c.includes("ajuda")) {
+    resposta.textContent =
+      "Posso informar a hora, a data e responder a saudações.";
+  } else {
+    resposta.textContent =
+      "Ainda não possuo essa função. Podemos desenvolvê-la juntos.";
+  }
+  status.textContent = "COMANDO PROCESSADO";
+}
+
+document.getElementById("enviar").onclick = executar;
+entrada.addEventListener("keydown", e => {
+  if (e.key === "Enter") executar();
+});
+
+document.getElementById("falar").onclick = () => {
+  if (!("speechSynthesis" in window)) {
+    resposta.textContent += " Voz indisponível neste navegador.";
+    return;
+  }
+  speechSynthesis.cancel();
+  const voz = new SpeechSynthesisUtterance(resposta.textContent);
+  voz.lang = "pt-BR";
+  speechSynthesis.speak(voz);
+};
+</script>
+</body>
+</html>
